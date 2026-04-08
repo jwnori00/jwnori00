@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Song+Myung&display=swap');
+
+@font-face {
+    font-family: 'Seokbo';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2205@1.0/Seokbo.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Seokbo", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Song Myung", serif;
+  
+  --color-temple-dark: #292524;
+  --color-temple-gold: #d4af37;
+  --color-temple-wood: #442c1e;
+  --color-temple-lantern: #f43f5e;
+  
+  /* Background image placeholders */
+  --image-temple-exterior: url('/temple-bg.jpg');
+  --image-temple-interior: url('/temple.jpg');
+}
+
+body {
+  @apply bg-temple-dark text-stone-200 antialiased overflow-x-hidden;
+  font-family: var(--font-sans);
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+/* Custom scrollbar for temple feel */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #1c1917;
+}
+::-webkit-scrollbar-thumb {
+  background: #442c1e;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #d4af37;
+}
