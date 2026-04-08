@@ -2298,7 +2298,7 @@ export default function App() {
 
               <Card className="space-y-6">
                 <div className="space-y-3">
-                  <label className="text-[10px] sm:text-xs text-stone-500 font-bold uppercase tracking-wider">응원팀 선택</label>
+                  <label className="text-xs sm:text-sm text-stone-500 font-bold uppercase tracking-wider">응원팀 선택</label>
                   <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1 custom-scrollbar">
                     {KBO_TEAMS.map((team) => (
                       <button
@@ -2316,7 +2316,7 @@ export default function App() {
                         }`}
                       >
                         <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full flex-shrink-0" style={{ backgroundColor: team.color }} />
-                        <span className={`text-[11px] sm:text-xs truncate ${lanternTeamId === team.id ? 'text-temple-gold font-bold' : 'text-stone-400'}`}>
+                        <span className={`text-xs sm:text-sm truncate ${lanternTeamId === team.id ? 'text-temple-gold font-bold' : 'text-stone-400'}`}>
                           {team.name}
                         </span>
                       </button>
@@ -2325,7 +2325,7 @@ export default function App() {
                 </div>
 
                 <div className="space-y-3">
-                  <label className="text-xs text-stone-500 font-bold uppercase tracking-wider">시주자 명</label>
+                  <label className="text-sm text-stone-500 font-bold uppercase tracking-wider">시주자 명</label>
                   <input 
                     type="text" 
                     value={wishName}
@@ -2336,7 +2336,7 @@ export default function App() {
                 </div>
 
                 <div className="space-y-3">
-                  <label className="text-xs text-stone-500 font-bold uppercase tracking-wider">비밀번호 (숫자 4자리)</label>
+                  <label className="text-sm text-stone-500 font-bold uppercase tracking-wider">비밀번호 (숫자 4자리)</label>
                   <input 
                     type="password" 
                     inputMode="numeric"
@@ -2350,8 +2350,8 @@ export default function App() {
 
                 <div className="space-y-3">
                   <div className="flex justify-between items-end">
-                    <label className="text-xs text-stone-500 font-bold uppercase tracking-wider">발원 소원</label>
-                    <span className="text-[10px] text-stone-600">{newWish.length}/20</span>
+                    <label className="text-sm text-stone-500 font-bold uppercase tracking-wider">발원 소원</label>
+                    <span className="text-xs text-stone-600">{newWish.length}/20</span>
                   </div>
                   <textarea 
                     value={newWish}
@@ -2414,8 +2414,8 @@ export default function App() {
                           className="flex flex-col items-center relative"
                         >
                           <LotusLantern teamColor={team?.color || '#ccc'} size={window.innerWidth < 640 ? 70 : 90} />
-                          <div className="mt-2 bg-stone-800/80 backdrop-blur-sm px-1.5 sm:px-2 py-0.5 rounded border border-stone-700 max-w-full">
-                            <span className="text-[8px] sm:text-[9px] text-stone-300 font-serif truncate max-w-[50px] sm:max-w-[60px] block">
+                          <div className="mt-2 bg-stone-800/80 backdrop-blur-sm px-2 sm:px-3 py-1 rounded border border-stone-700 max-w-full shadow-lg">
+                            <span className="text-[11px] sm:text-[13px] text-stone-200 font-serif truncate max-w-[65px] sm:max-w-[85px] block text-center">
                               {wish.name}
                             </span>
                           </div>
@@ -2451,13 +2451,13 @@ export default function App() {
 
                       <div className="space-y-4 sm:space-y-6 text-center w-full">
                         <div className="space-y-1">
-                          <p className="text-[10px] sm:text-xs text-stone-500">시주자</p>
-                          <p className="text-lg sm:text-xl font-bold truncate">{selectedWish.name}</p>
+                          <p className="text-xs sm:text-sm text-stone-500">시주자</p>
+                          <p className="text-xl sm:text-2xl font-bold truncate">{selectedWish.name}</p>
                         </div>
                         
                         <div className="space-y-1">
-                          <p className="text-[10px] sm:text-xs text-stone-500">응원 구단</p>
-                          <p className="text-base sm:text-lg">{KBO_TEAMS.find(t => t.id === selectedWish.teamId)?.name}</p>
+                          <p className="text-xs sm:text-sm text-stone-500">응원 구단</p>
+                          <p className="text-lg sm:text-xl">{KBO_TEAMS.find(t => t.id === selectedWish.teamId)?.name}</p>
                         </div>
 
                         <div className="pt-4 border-t border-stone-200">
@@ -3156,12 +3156,12 @@ export default function App() {
                       animate={{ opacity: 1, y: 0 }}
                       className="bg-stone-800/40 border-l-2 border-temple-gold p-3 sm:p-4 rounded-r-xl space-y-1.5 sm:space-y-2"
                     >
-                      <div className="flex justify-between items-center text-[10px] sm:text-xs">
+                      <div className="flex justify-between items-center text-xs sm:text-sm">
                         <div className="flex items-center gap-2 overflow-hidden">
                           <span className="text-temple-gold font-medium truncate max-w-[100px]">{msg.nickname}</span>
                           {msg.author_team_id && (
                             <span 
-                              className="px-1.5 py-0.5 rounded text-[8px] sm:text-[9px] font-bold flex-shrink-0"
+                              className="px-1.5 py-0.5 rounded text-[10px] sm:text-[11px] font-bold flex-shrink-0"
                               style={{ 
                                 backgroundColor: KBO_TEAMS.find(t => t.id === msg.author_team_id)?.color + '20',
                                 color: KBO_TEAMS.find(t => t.id === msg.author_team_id)?.color,
@@ -3174,12 +3174,12 @@ export default function App() {
                         </div>
                         <span className="text-stone-600 flex-shrink-0">{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                       </div>
-                      <p className="text-stone-300 text-xs sm:text-sm leading-relaxed break-keep">{msg.content}</p>
+                      <p className="text-sm sm:text-base text-stone-300 leading-relaxed break-keep">{msg.content}</p>
                       <button 
                         onClick={() => handleLikeMessage(msg.id)}
-                        className="flex items-center gap-1 text-[10px] sm:text-xs text-stone-500 hover:text-temple-lantern transition-colors"
+                        className="flex items-center gap-1 text-xs sm:text-sm text-stone-500 hover:text-temple-lantern transition-colors"
                       >
-                        <Heart size={10} className={msg.likes > 0 ? "fill-temple-lantern text-temple-lantern" : ""} />
+                        <Heart size={12} className={msg.likes > 0 ? "fill-temple-lantern text-temple-lantern" : ""} />
                         _()_ {msg.likes > 0 && msg.likes}
                       </button>
                     </motion.div>
