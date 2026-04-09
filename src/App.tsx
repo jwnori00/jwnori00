@@ -262,6 +262,23 @@ const LotusLantern = ({ teamColor, size = 60, className = "" }: { teamColor: str
   );
 };
 
+const TeamBadge = ({ teamId, className = "" }: { teamId: string, className?: string }) => {
+  const team = KBO_TEAMS.find(t => t.id === teamId);
+  if (!team) return null;
+  
+  return (
+    <span 
+      className={`px-1.5 py-0.5 rounded text-[10px] sm:text-[11px] font-bold flex-shrink-0 bg-white text-stone-900 border shadow-sm ${className}`}
+      style={{ 
+        color: team.color,
+        borderColor: team.color + '40'
+      }}
+    >
+      {team.name.split(' ')[0]}
+    </span>
+  );
+};
+
 export default function App() {
   const [screenStack, setScreenStack] = useState<Screen[]>(['entrance']);
   const screen = screenStack[screenStack.length - 1];
@@ -282,6 +299,7 @@ export default function App() {
     audioRef, 
     toggleMute, 
     changeTrack, 
+    seek,
     handleAudioError,
     handleTimeUpdate,
     handleLoadedMetadata,
@@ -1833,20 +1851,23 @@ export default function App() {
                 </h4>
                 {!isMuted && duration > 0 && (
                   <div className="mt-1.5 space-y-1">
-                    <div 
-                      className="h-1 w-full bg-stone-800 rounded-full overflow-hidden cursor-pointer group"
-                      onClick={(e) => {
-                        const rect = e.currentTarget.getBoundingClientRect();
-                        const x = e.clientX - rect.left;
-                        const pct = x / rect.width;
-                        if (audioRef.current) {
-                          audioRef.current.currentTime = pct * duration;
-                        }
-                      }}
-                    >
+                    <div className="relative h-1.5 w-full bg-stone-800 rounded-full cursor-pointer group">
+                      <input 
+                        type="range"
+                        min={0}
+                        max={duration}
+                        step={0.1}
+                        value={progress}
+                        onChange={(e) => seek(parseFloat(e.target.value))}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                      />
                       <div 
-                        className="h-full bg-temple-gold transition-all duration-300 group-hover:bg-temple-gold/80" 
+                        className="absolute top-0 left-0 h-full bg-temple-gold rounded-full transition-all duration-100" 
                         style={{ width: `${(progress / duration) * 100}%` }}
+                      />
+                      <div 
+                        className="absolute top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-white border-2 border-temple-gold rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+                        style={{ left: `calc(${(progress / duration) * 100}% - 5px)` }}
                       />
                     </div>
                     <div className="flex justify-between text-[8px] text-stone-600 font-mono">
@@ -2414,10 +2435,13 @@ export default function App() {
                           className="flex flex-col items-center relative"
                         >
                           <LotusLantern teamColor={team?.color || '#ccc'} size={window.innerWidth < 640 ? 70 : 90} />
-                          <div className="mt-2 bg-stone-800/80 backdrop-blur-sm px-2 sm:px-3 py-1 rounded border border-stone-700 max-w-full shadow-lg">
-                            <span className="text-[11px] sm:text-[13px] text-stone-200 font-serif truncate max-w-[65px] sm:max-w-[85px] block text-center">
-                              {wish.name}
-                            </span>
+                          <div className="mt-2 flex flex-col items-center gap-1">
+                            {wish.teamId && <TeamBadge teamId={wish.teamId} className="scale-75 origin-center" />}
+                            <div className="bg-stone-800/80 backdrop-blur-sm px-2 sm:px-3 py-1 rounded border border-stone-700 max-w-full shadow-lg">
+                              <span className="text-[11px] sm:text-[13px] text-stone-200 font-serif truncate max-w-[65px] sm:max-w-[85px] block text-center">
+                                {wish.name}
+                              </span>
+                            </div>
                           </div>
                         </motion.button>
                       );
@@ -2783,16 +2807,7 @@ export default function App() {
                               </span>
                               {/* Display cheering team badge */}
                               {account.teamId && (
-                                <span 
-                                  className="text-[8px] px-1.5 py-0.5 rounded-md border"
-                                  style={{ 
-                                    backgroundColor: KBO_TEAMS.find(t => t.id === account.teamId)?.color + '20',
-                                    color: KBO_TEAMS.find(t => t.id === account.teamId)?.color,
-                                    borderColor: KBO_TEAMS.find(t => t.id === account.teamId)?.color + '40'
-                                  }}
-                                >
-                                  {KBO_TEAMS.find(t => t.id === account.teamId)?.name.split(' ')[0] || account.teamId}
-                                </span>
+                                <TeamBadge teamId={account.teamId} />
                               )}
                             </div>
                             <p className="text-[10px] text-stone-500 mt-1">ID: {account.accountId.slice(0, 8)}...</p>
@@ -3160,16 +3175,7 @@ export default function App() {
                         <div className="flex items-center gap-2 overflow-hidden">
                           <span className="text-temple-gold font-medium truncate max-w-[100px]">{msg.nickname}</span>
                           {msg.author_team_id && (
-                            <span 
-                              className="px-1.5 py-0.5 rounded text-[10px] sm:text-[11px] font-bold flex-shrink-0"
-                              style={{ 
-                                backgroundColor: KBO_TEAMS.find(t => t.id === msg.author_team_id)?.color + '20',
-                                color: KBO_TEAMS.find(t => t.id === msg.author_team_id)?.color,
-                                border: `1px solid ${KBO_TEAMS.find(t => t.id === msg.author_team_id)?.color}40`
-                              }}
-                            >
-                              {KBO_TEAMS.find(t => t.id === msg.author_team_id)?.name.split(' ')[0]}
-                            </span>
+                            <TeamBadge teamId={msg.author_team_id} />
                           )}
                         </div>
                         <span className="text-stone-600 flex-shrink-0">{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>

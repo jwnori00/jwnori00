@@ -61,6 +61,13 @@ export const useTempleAudio = () => {
     setAudioError(null);
   }, [selectedTrack]);
 
+  // Force load when src changes
+  useEffect(() => {
+    if (audioRef.current && activeSrc) {
+      audioRef.current.load();
+    }
+  }, [activeSrc]);
+
   const handleTimeUpdate = useCallback(() => {
     if (audioRef.current && selectedTrack) {
       const current = audioRef.current.currentTime;
@@ -96,18 +103,49 @@ export const useTempleAudio = () => {
     localStorage.setItem('temple_selected_track', track.id);
   }, []);
 
-  const handleAudioError = useCallback(() => {
+  const seek = useCallback((time: number) => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = time;
+      setProgress(time);
+    }
+  }, []);
+
+  const handleAudioError = useCallback((e: any) => {
+    // Log more details about the error
+    const error = audioRef.current?.error;
+    console.warn("Audio element error details:", {
+      code: error?.code,
+      message: error?.message,
+      activeSrc
+    });
+
+    // If the error code is 4 (MEDIA_ERR_SRC_NOT_SUPPORTED) and it's a local file, 
+    // it's very likely the file is empty or invalid.
+    
     // If we have a fallback URL and haven't tried it yet, try it
     if (selectedTrack.fallbackUrl && activeSrc !== selectedTrack.fallbackUrl) {
-      console.log(`Local audio file not found at ${activeSrc}. Attempting fallback URL: ${selectedTrack.fallbackUrl}`);
+      console.log(`Audio error at ${activeSrc}. Attempting fallback URL: ${selectedTrack.fallbackUrl}`);
+      
+      // Reset the error state before trying fallback
+      setAudioError(null);
       setActiveSrc(selectedTrack.fallbackUrl);
+      
+      // Use a small timeout to ensure state update propagates before loading
+      setTimeout(() => {
+        if (audioRef.current) {
+          audioRef.current.load();
+          if (!isMuted) {
+            audioRef.current.play().catch(err => console.warn("Fallback play failed:", err));
+          }
+        }
+      }, 100);
       return;
     }
 
     console.error("Audio element reported a fatal error or fallback failed");
-    setAudioError("법음을 재생할 수 없습니다. 파일이 없거나 경로가 잘못되었습니다.");
+    setAudioError("법음을 재생할 수 없습니다. 파일이 비어있거나 경로가 잘못되었습니다. (폴백 실패)");
     setIsMuted(true);
-  }, [selectedTrack, activeSrc]);
+  }, [selectedTrack, activeSrc, isMuted]);
 
   return {
     isMuted,
@@ -120,6 +158,7 @@ export const useTempleAudio = () => {
     audioRef,
     toggleMute,
     changeTrack,
+    seek,
     handleAudioError,
     handleTimeUpdate,
     handleLoadedMetadata,
