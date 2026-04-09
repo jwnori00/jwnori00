@@ -103,6 +103,13 @@ export const useTempleAudio = () => {
     localStorage.setItem('temple_selected_track', track.id);
   }, []);
 
+  const seek = useCallback((time: number) => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = time;
+      setProgress(time);
+    }
+  }, []);
+
   const handleAudioError = useCallback((e: any) => {
     // Log more details about the error
     const error = audioRef.current?.error;
@@ -151,6 +158,7 @@ export const useTempleAudio = () => {
     audioRef,
     toggleMute,
     changeTrack,
+    seek,
     handleAudioError,
     handleTimeUpdate,
     handleLoadedMetadata,
